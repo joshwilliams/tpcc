@@ -142,7 +142,7 @@ public class TpccThread extends Thread {
 
 
             conn = DriverManager.getConnection(jdbcUrl, prop);
-            conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             conn.setAutoCommit(false);
 
         } catch (SQLException e) {

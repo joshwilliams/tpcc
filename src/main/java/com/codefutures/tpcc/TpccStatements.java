@@ -22,10 +22,10 @@ public class TpccStatements {
         this.conn = conn;
 
         // NewOrder statements.
-        pStmts[0]  = prepareStatement("SELECT c.c_discount, c.c_last, c.c_credit, w.w_tax FROM customer AS c JOIN warehouse AS w ON c.c_w_id = w_id AND w.w_id = ? AND c.c_w_id = ? AND c.c_d_id = ? AND c.c_id = ?");
+        pStmts[0]  = prepareStatement("SELECT c.c_discount, c.c_last, c.c_credit, w.w_tax FROM customer c JOIN warehouse w ON c.c_w_id = w_id AND w.w_id = ? AND c.c_w_id = ? AND c.c_d_id = ? AND c.c_id = ?");
         pStmts[1]  = prepareStatement("SELECT d_next_o_id, d_tax FROM district WHERE d_id = ? AND d_w_id = ? FOR UPDATE");
         pStmts[2]  = prepareStatement("UPDATE district SET d_next_o_id = ? + 1 WHERE d_id = ? AND d_w_id = ?");
-        pStmts[3]  = prepareStatement("INSERT INTO orders (o_id, o_d_id, o_w_id, o_c_id, o_entry_d, o_ol_cnt, o_all_local) VALUES(?, ?, ?, ?, ?, ?, ?)");
+        pStmts[3]  = prepareStatement("INSERT INTO orders (o_id, o_d_id, o_w_id, o_c_id, o_entry_d, o_ol_cnt, o_all_local) VALUES(?, ?, ?, ?, TO_TIMESTAMP(?, 'YYYY-DD-MM HH24:MI:SS.FF'), ?, ?)");
         pStmts[4]  = prepareStatement("INSERT INTO new_orders (no_o_id, no_d_id, no_w_id) VALUES (?,?,?)");
         pStmts[5]  = prepareStatement("SELECT i_price, i_name, i_data FROM item WHERE i_id = ?");
         pStmts[6]  = prepareStatement("SELECT s_quantity, s_data, s_dist_01, s_dist_02, s_dist_03, s_dist_04, s_dist_05, s_dist_06, s_dist_07, s_dist_08, s_dist_09, s_dist_10 FROM stock WHERE s_i_id = ? AND s_w_id = ? FOR UPDATE");
@@ -57,7 +57,7 @@ public class TpccStatements {
         pStmts[26] = prepareStatement("DELETE FROM new_orders WHERE no_o_id = ? AND no_d_id = ? AND no_w_id = ?");
         pStmts[27] = prepareStatement("SELECT o_c_id FROM orders WHERE o_id = ? AND o_d_id = ? AND o_w_id = ?");
         pStmts[28] = prepareStatement("UPDATE orders SET o_carrier_id = ? WHERE o_id = ? AND o_d_id = ? AND o_w_id = ?");
-        pStmts[29] = prepareStatement("UPDATE order_line SET ol_delivery_d = ? WHERE ol_o_id = ? AND ol_d_id = ? AND ol_w_id = ?");
+        pStmts[29] = prepareStatement("UPDATE order_line SET ol_delivery_d = TO_TIMESTAMP(?, 'YYYY-DD-MM HH24:MI:SS.FF') WHERE ol_o_id = ? AND ol_d_id = ? AND ol_w_id = ?");
         pStmts[30] = prepareStatement("SELECT SUM(ol_amount) FROM order_line WHERE ol_o_id = ? AND ol_d_id = ? AND ol_w_id = ?");
         pStmts[31] = prepareStatement("UPDATE customer SET c_balance = c_balance + ? , c_delivery_cnt = c_delivery_cnt + 1 WHERE c_id = ? AND c_d_id = ? AND c_w_id = ?");
 

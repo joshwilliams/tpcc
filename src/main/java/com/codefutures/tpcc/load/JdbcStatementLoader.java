@@ -85,7 +85,7 @@ public class JdbcStatementLoader implements RecordLoader {
 
             if (fieldValue instanceof Date) {
 //                b.append("'").append(dateTimeFormat.format((Date)field[i])).append("'");
-                b.append("'").append((Date) fieldValue).append("'");
+                b.append("to_date('").append((Date) fieldValue).append("','YYYY-MM-DD')");
             } else if (fieldValue instanceof String) {
                 b.append("'").append(fieldValue).append("'");
             } else {
