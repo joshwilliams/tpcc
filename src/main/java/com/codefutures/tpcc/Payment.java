@@ -58,8 +58,8 @@ public class Payment implements TpccConstants {
 
 
             int c_credit_lim = 0;
-            float c_discount = 0;
-            float c_balance = 0;
+            double c_discount = 0;
+            double c_balance = 0;
             String c_data = null;
             String c_new_data = null;
 
@@ -244,8 +244,8 @@ public class Payment implements TpccConstants {
                     c_phone = rs.getString(9);
                     c_credit = rs.getString(10);
                     c_credit_lim = rs.getInt(11);
-                    c_discount = rs.getFloat(12);
-                    c_balance = rs.getFloat(13);
+                    c_discount = rs.getDouble(12);
+                    c_balance = rs.getDouble(13);
                     c_since = rs.getString(14);
                 }
 
@@ -292,7 +292,7 @@ public class Payment implements TpccConstants {
                     //"UPDATE customer SET c_balance = ?, c_data = ? WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?"
                     try {
                         //System.out.print("Executed UPDATE.\n");
-                        pStmts.getStatement(17).setFloat(1, c_balance);
+                        pStmts.getStatement(17).setDouble(1, c_balance);
                         pStmts.getStatement(17).setString(2, c_data);
                         pStmts.getStatement(17).setInt(3, c_w_id);
                         pStmts.getStatement(17).setInt(4, c_d_id);
@@ -313,7 +313,7 @@ public class Payment implements TpccConstants {
                     //"UPDATE customer SET c_balance = ? WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?"
 
                     try {
-                        pStmts.getStatement(18).setFloat(1, c_balance);
+                        pStmts.getStatement(18).setDouble(1, c_balance);
                         pStmts.getStatement(18).setInt(2, c_w_id);
                         pStmts.getStatement(18).setInt(3, c_d_id);
                         pStmts.getStatement(18).setInt(4, c_id);
@@ -333,7 +333,7 @@ public class Payment implements TpccConstants {
                 //"UPDATE customer SET c_balance = ? WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?"
 
                 try {
-                    pStmts.getStatement(18).setFloat(1, c_balance);
+                    pStmts.getStatement(18).setDouble(1, c_balance);
                     pStmts.getStatement(18).setInt(2, c_w_id);
                     pStmts.getStatement(18).setInt(3, c_d_id);
                     pStmts.getStatement(18).setInt(4, c_id);

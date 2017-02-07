@@ -37,14 +37,14 @@ public class OrderStat implements TpccConstants {
             String c_first = null;
             String c_middle = null;
             String c_last = null;
-            float c_balance = 0;
+            double c_balance = 0;
             int o_id = 0;
             String o_entry_d = null;
             int o_carrier_id = 0;
             int ol_i_id = 0;
             int ol_supply_w_id = 0;
             int ol_quantity = 0;
-            float ol_amount = 0;
+            double ol_amount = 0;
             String ol_delivery_d = null;
             int namecnt = 0;
 
@@ -93,7 +93,7 @@ public class OrderStat implements TpccConstants {
                     // Use a for loop to find midpoint customer based on namecnt.
                     for (n = 0; n < namecnt / 2; n++) {
                         rs.next();
-                        c_balance = rs.getFloat(1);
+                        c_balance = rs.getDouble(1);
                         c_first = rs.getString(2);
                         c_middle = rs.getString(3);
                         c_last = rs.getString(4);
@@ -118,7 +118,7 @@ public class OrderStat implements TpccConstants {
                             "c_w_id = " + c_w_id + " AND c_d_id = " + c_d_id + " AND c_id = " + c_id);
                     ResultSet rs = pStmts.getStatement(22).executeQuery();
                     if (rs.next()) {
-                        c_balance = rs.getFloat(1);
+                        c_balance = rs.getDouble(1);
                         c_first = rs.getString(2);
                         c_middle = rs.getString(3);
                         c_last = rs.getString(4);
@@ -177,7 +177,7 @@ public class OrderStat implements TpccConstants {
                     ol_i_id = rs.getInt(1);
                     ol_supply_w_id = rs.getInt(2);
                     ol_quantity = rs.getInt(3);
-                    ol_amount = rs.getFloat(4);
+                    ol_amount = rs.getDouble(4);
                     ol_delivery_d = rs.getString(5);
                 }
 

@@ -28,7 +28,7 @@ public class Delivery implements TpccConstants {
             int d_id = 0;
             int c_id = 0;
             int no_o_id = 0;
-            float ol_total = 0;
+            double ol_total = 0;
 
             Calendar calendar = Calendar.getInstance();
             Date now = calendar.getTime();
@@ -146,7 +146,7 @@ public class Delivery implements TpccConstants {
                     pStmts.getStatement(30).setInt(3, w_id);
                     ResultSet rs = pStmts.getStatement(30).executeQuery();
                     if (rs.next()) {
-                        ol_total = rs.getFloat(1);
+                        ol_total = rs.getDouble(1);
                     }
 
 
@@ -162,7 +162,7 @@ public class Delivery implements TpccConstants {
                 if (TRACE)
                     logger.trace("UPDATE customer SET c_balance = c_balance + " + ol_total + ", c_delivery_cnt = c_delivery_cnt + 1 WHERE c_id = " + c_id + " AND c_d_id = " + d_id + " AND c_w_id = " + w_id);
                 try {
-                    pStmts.getStatement(31).setFloat(1, ol_total);
+                    pStmts.getStatement(31).setDouble(1, ol_total);
                     pStmts.getStatement(31).setInt(2, c_id);
                     pStmts.getStatement(31).setInt(3, d_id);
                     pStmts.getStatement(31).setInt(4, w_id);

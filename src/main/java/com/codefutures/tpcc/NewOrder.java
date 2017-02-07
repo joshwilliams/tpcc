@@ -25,7 +25,7 @@ public class NewOrder implements TpccConstants {
 
     String[] iname = new String[MAX_NUM_ITEMS];
     String[] bg = new String[MAX_NUM_ITEMS];
-    float[] amt = new float[MAX_NUM_ITEMS];
+    double[] amt = new double[MAX_NUM_ITEMS];
     float[] price = new float[MAX_NUM_ITEMS];
     int[] stock = new int[MAX_NUM_ITEMS];
     int[] ol_num_seq = new int[MAX_NUM_ITEMS];
@@ -99,7 +99,7 @@ public class NewOrder implements TpccConstants {
             int c_id = c_id_arg;
             int o_ol_cnt = o_ol_cnt_arg;
             int o_all_local = o_all_local_arg;
-            float c_discount = 0;
+            double c_discount = 0;
             String c_last = null;
             String c_credit = null;
             float w_tax = 0;
@@ -115,7 +115,7 @@ public class NewOrder implements TpccConstants {
 
             String ol_dist_info = null;
             int ol_supply_w_id = 0;
-            float ol_amount = 0;
+            double ol_amount = 0;
             int ol_number = 0;
             int ol_quantity = 0;
 
@@ -150,7 +150,7 @@ public class NewOrder implements TpccConstants {
                         logger.trace("SELECT c_discount, c_last, c_credit, w_tax FROM customer, warehouse WHERE w_id = " + w_id + " AND c_w_id = " + w_id + " AND c_d_id = " + d_id + " AND c_id = " + c_id);
                     try (ResultSet rs = pstmt0.executeQuery()) {
                         if (rs.next()) {
-                            c_discount = rs.getFloat(1);
+                            c_discount = rs.getDouble(1);
                             c_last = rs.getString(2);
                             c_credit = rs.getString(3);
                             w_tax = rs.getFloat(4);
@@ -181,7 +181,7 @@ public class NewOrder implements TpccConstants {
                         logger.trace("SELECT w_tax FROM warehouse WHERE w_id = " + w_id);
                     try (ResultSet rs0 = pstmt35.executeQuery()) {
                         if (rs0.next()) {
-                            c_discount = rs0.getFloat(1);
+                            c_discount = rs0.getDouble(1);
                             c_last = rs0.getString(2);
                             c_credit = rs0.getString(3);
                         }
@@ -418,7 +418,7 @@ public class NewOrder implements TpccConstants {
                     pstmt8.setInt(5, ol_i_id);
                     pstmt8.setInt(6, ol_supply_w_id);
                     pstmt8.setInt(7, ol_quantity);
-                    pstmt8.setFloat(8, ol_amount);
+                    pstmt8.setDouble(8, ol_amount);
                     pstmt8.setString(9, ol_dist_info);
                     if (TRACE)
                         logger.trace("INSERT INTO order_line (ol_o_id, ol_d_id, ol_w_id, ol_number, ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_dist_info) " +

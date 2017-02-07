@@ -220,7 +220,7 @@ public class TpccLoad implements TpccConstants {
             } catch (SQLException e) {
                 throw new RuntimeException("Could not create statement", e);
             }
-            try {
+            /*try {
                 stmt.execute("SET UNIQUE_CHECKS=0");
             } catch (SQLException e) {
                 throw new RuntimeException("Could not set unique checks error", e);
@@ -230,7 +230,7 @@ public class TpccLoad implements TpccConstants {
                 stmt.close();
             } catch (SQLException e) {
                 throw new RuntimeException("Could not set foreign key checks error", e);
-            }
+            }*/
 
             loadConfig.setLoadType(TpccLoadConfig.LoadType.JDBC_STATEMENT);
             loadConfig.setConn(conn);
