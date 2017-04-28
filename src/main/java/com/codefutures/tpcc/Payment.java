@@ -348,7 +348,7 @@ public class Payment implements TpccConstants {
 
             }
 
-            h_data = h_data + '\0' + d_name + ' ' + ' ' + ' ' + ' ' + '\0';
+            h_data = h_data + ':' + d_name + ' ' + ' ' + ' ' + ' ' + ':';
 
             proceed = 10;
             //Get prepared statement
