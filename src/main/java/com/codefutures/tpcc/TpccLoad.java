@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.Properties;
+import com.couchbase.jdbc.util.Credentials;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -199,12 +200,16 @@ public class TpccLoad implements TpccConstants {
             Connection conn;
 
             try {
-                //TODO: load from config
                 Properties jdbcConnectProp = new Properties();
-                jdbcConnectProp.setProperty("user", dbUser);
-                jdbcConnectProp.setProperty("password", dbPassword);
+
+                //jdbcConnectProp.setProperty("user", dbUser);
+                //jdbcConnectProp.setProperty("password", dbPassword);
                 jdbcConnectProp.setProperty("useServerPrepStmts", "true");
                 jdbcConnectProp.setProperty("cachePrepStmts", "true");
+
+                Credentials cred = new Credentials();
+                cred.add(dbUser, dbPassword);
+                jdbcConnectProp.setProperty("credentials", cred.toString());
 
                 conn = DriverManager.getConnection(jdbcUrl, jdbcConnectProp);
                 conn.setAutoCommit(false);

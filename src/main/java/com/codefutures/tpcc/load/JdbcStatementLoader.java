@@ -35,29 +35,40 @@ public class JdbcStatementLoader implements RecordLoader {
     }
 
     public void load(Record r) throws Exception {
-        if (currentBatchSize == 0) {
-            b.append("INSERT ");
-            if (ignore) {
-                b.append("IGNORE ");
-            }
-            b.append("INTO ").append(tableName).append(" (");
-            for (int i = 0; i < columnName.length; i++) {
-                if (i > 0) {
-                    b.append(',');
-                }
-                b.append(columnName[i].trim());
-            }
-            b.append(") VALUES ");
-        } else {
-            b.append(',');
-        }
-        b.append('(');
-        write(b, r, ",");
-        b.append(')');
+        final Object[] field = r.getField();
+        Object fieldValue = field[0];
 
-        if (++currentBatchSize == maxBatchSize) {
-            executeBulkInsert();
+        b.append("INSERT INTO default VALUES (");
+        if (tableName.equals("history")) {
+            b.append("uuid()");
         }
+        else {
+            b.append("'").append(fieldValue).append("'");
+        }
+        b.append(", {'type': '").append(tableName).append("'");
+        /*if (ignore) {
+            b.append("IGNORE ");
+        }
+        b.append("INTO test_").append(tableName).append(" (");*/
+        for (int i = 0; i < columnName.length; i++) {
+            fieldValue = field[i+1];
+
+            b.append(", '");
+            b.append(columnName[i].trim());
+            b.append("': ");
+
+            if (fieldValue instanceof Date) {
+//                b.append("'").append(dateTimeFormat.format((Date)field[i])).append("'");
+                b.append("'").append((Date) fieldValue).append("'");
+            } else if (fieldValue instanceof String) {
+                b.append("'").append(fieldValue).append("'");
+            } else {
+                b.append(fieldValue);
+            }
+        }
+        b.append("})");
+
+        executeBulkInsert();
     }
 
     private void executeBulkInsert() throws SQLException {
@@ -72,26 +83,6 @@ public class JdbcStatementLoader implements RecordLoader {
             throw new RuntimeException("Error loading into table '" + tableName + "' with SQL: " + sql, e);
         }
         currentBatchSize = 0;
-    }
-
-    public void write(StringBuilder b, Record r, String delim) throws Exception {
-        final Object[] field = r.getField();
-        for (int i = 0; i < field.length; i++) {
-            if (i > 0) {
-                b.append(delim);
-            }
-
-            final Object fieldValue = field[i];
-
-            if (fieldValue instanceof Date) {
-//                b.append("'").append(dateTimeFormat.format((Date)field[i])).append("'");
-                b.append("'").append((Date) fieldValue).append("'");
-            } else if (fieldValue instanceof String) {
-                b.append("'").append(fieldValue).append("'");
-            } else {
-                b.append(fieldValue);
-            }
-        }
     }
 
     public void commit() throws Exception {

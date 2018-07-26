@@ -25,9 +25,11 @@
     <dependencies>
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.4</version>
+            <groupId>com.couchbase.jdbc</groupId>
+            <artifactId>jdbc-n1ql</artifactId>
+            <version>1.0-BETA</version>
+            <scope>system</scope>
+            <systemPath>/home/centos/jdbc-cb/target/jdbc-n1ql-1.0-SNAPSHOT.jar</systemPath>
         </dependency>
 
         <dependency>

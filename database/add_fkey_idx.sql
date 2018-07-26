@@ -1,25 +1,15 @@
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+CREATE INDEX table_type ON default (type);
 
-CREATE INDEX idx_customer ON customer (c_w_id,c_d_id,c_last,c_first);
-CREATE INDEX idx_orders ON orders (o_w_id,o_d_id,o_c_id,o_id);
-CREATE INDEX fkey_stock_2 ON stock (s_i_id);
-CREATE INDEX fkey_order_line_2 ON order_line (ol_supply_w_id,ol_i_id);
+CREATE INDEX idx_customer ON default (c_w_id,c_d_id,c_last,c_first) WHERE type = "customer" WITH {"defer_build":true};
+CREATE INDEX idx_orders ON default (o_w_id,o_d_id,o_c_id,o_id) WHERE type = "orders" WITH {"defer_build":true};
+CREATE INDEX fkey_stock_2 ON default (s_i_id) WHERE type = "stock" WITH {"defer_build":true};
+CREATE INDEX fkey_order_line_2 ON default (ol_supply_w_id,ol_i_id) WHERE type = "order_line" WITH {"defer_build":true};
 
-ALTER TABLE district  ADD CONSTRAINT fkey_district_1 FOREIGN KEY(d_w_id) REFERENCES warehouse(w_id);
-ALTER TABLE customer ADD CONSTRAINT fkey_customer_1 FOREIGN KEY(c_w_id,c_d_id) REFERENCES district(d_w_id,d_id);
-ALTER TABLE history  ADD CONSTRAINT fkey_history_2 FOREIGN KEY(h_w_id,h_d_id) REFERENCES district(d_w_id,d_id);
-ALTER TABLE new_orders ADD CONSTRAINT fkey_new_orders_1 FOREIGN KEY(no_w_id,no_d_id,no_o_id) REFERENCES orders(o_w_id,o_d_id,o_id);
-ALTER TABLE orders ADD CONSTRAINT fkey_orders_1 FOREIGN KEY(o_w_id,o_d_id,o_c_id) REFERENCES customer(c_w_id,c_d_id,c_id);
-ALTER TABLE order_line ADD CONSTRAINT fkey_order_line_1 FOREIGN KEY(ol_w_id,ol_d_id,ol_o_id) REFERENCES orders(o_w_id,o_d_id,o_id);
-ALTER TABLE stock ADD CONSTRAINT fkey_stock_1 FOREIGN KEY(s_w_id) REFERENCES warehouse(w_id);
-ALTER TABLE stock ADD CONSTRAINT fkey_stock_2 FOREIGN KEY(s_i_id) REFERENCES item(i_id);
+CREATE INDEX customer_pk ON default (c_w_id, c_d_id, c_id) WHERE type = "customer" WITH {"defer_build":true};
+CREATE INDEX new_orders_pk ON default (no_w_id, no_d_id, no_o_id) WHERE type = "new_orders" WITH {"defer_build":true};
+CREATE INDEX orders_pk ON default (o_w_id, o_d_id, o_id) WHERE type = "orders" WITH {"defer_build":true};
+CREATE INDEX order_line_pk ON default (ol_w_id, ol_d_id, ol_o_id, ol_number) WITH {"defer_build":true};
+CREATE INDEX item_pk ON default (i_id) WITH {"defer_build":true};
+CREATE INDEX stock_pk ON default (s_w_id, s_i_id) WITH {"defer_build":true};
 
-
-#NOTE: the following FKs are not shard-safe since they can reference a warehouse in another shard
-#ALTER TABLE order_line ADD CONSTRAINT fkey_order_line_2 FOREIGN KEY(ol_supply_w_id,ol_i_id) REFERENCES stock(s_w_id,s_i_id);
-#ALTER TABLE history  ADD CONSTRAINT fkey_history_1 FOREIGN KEY(h_c_w_id,h_c_d_id,h_c_id) REFERENCES customer(c_w_id,c_d_id,c_id);
-
-
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+BUILD INDEX ON default(customer_pk, fkey_order_line_2, fkey_stock_2, idx_customer, idx_orders, item_pk, new_orders_pk, order_line_pk, orders_pk, stock_pk) USING GSI;

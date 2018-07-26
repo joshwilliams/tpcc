@@ -45,7 +45,7 @@ public class Load implements TpccConstants {
         }
 
         final String ITEM_COLUMN_NAME[] = {"i_id", " i_im_id", " i_name", " i_price", " i_data"};
-        final Record itemRecord = new Record(5);
+        final Record itemRecord = new Record(6);
         final RecordLoader itemLoader = loadConfig.createLoader("item", ITEM_COLUMN_NAME);
 
         for (i_id = 1; i_id <= MAXITEMS; i_id++) {
@@ -74,6 +74,7 @@ public class Load implements TpccConstants {
                                item
                                values(:i_id,:i_im_id,:i_name,:i_price,:i_data); */
             itemRecord.reset();
+            itemRecord.add("item_" + Integer.toString(i_id));
             itemRecord.add(i_id);
             itemRecord.add(i_im_id);
             itemRecord.add(i_name);
@@ -121,7 +122,7 @@ public class Load implements TpccConstants {
         System.out.printf("Loading Warehouse \n");
 
         final String WAREHOUSE_COLUMN_NAME[] = {"w_id", " w_name", " w_street_1", " w_street_2", " w_city", " w_state", " w_zip", " w_tax", " w_ytd"};
-        final Record warehouseRecord = new Record(9);
+        final Record warehouseRecord = new Record(10);
         final RecordLoader warehouseLoader = loadConfig.createLoader("warehouse", WAREHOUSE_COLUMN_NAME);
 
 
@@ -162,6 +163,7 @@ public class Load implements TpccConstants {
                                        :w_zip,:w_tax,:w_ytd);*/
 
                 warehouseRecord.reset();
+                warehouseRecord.add("warehouse_" + Integer.toString(w_id));
                 warehouseRecord.add(w_id);
                 warehouseRecord.add(w_name);
                 warehouseRecord.add(w_street_1);
@@ -263,7 +265,7 @@ public class Load implements TpccConstants {
                 "s_remote_cnt", " s_data"
         };
 
-        final Record stockRecord = new Record(17);
+        final Record stockRecord = new Record(18);
         RecordLoader stockLoader = loadConfig.createLoader("stock", STOCK_COLUMN_NAME);
 
         /* EXEC SQL WHENEVER SQLERROR GOTO sqlerr;*/
@@ -313,6 +315,7 @@ public class Load implements TpccConstants {
                               0, 0, 0,:s_data);*/
 
             stockRecord.reset();
+            stockRecord.add("stock_" + Integer.toString(s_i_id) + "_" + Integer.toString(s_w_id));
             stockRecord.add(s_i_id);
             stockRecord.add(s_w_id);
             stockRecord.add(s_quantity);
@@ -377,7 +380,7 @@ public class Load implements TpccConstants {
         d_next_o_id = 3001;
 
         final String[] DISTRICT_COLUMN_NAME = {"d_id", " d_w_id", " d_name", " d_street_1", " d_street_2", " d_city", " d_state", " d_zip", " d_tax", " d_ytd", " d_next_o_id"};
-        final Record districtRecord = new Record(11);
+        final Record districtRecord = new Record(12);
         final RecordLoader districtLoader = loadConfig.createLoader("district", DISTRICT_COLUMN_NAME);
 
         //retry:
@@ -401,6 +404,7 @@ public class Load implements TpccConstants {
                               :d_tax,:d_ytd,:d_next_o_id);*/
 
             districtRecord.reset();
+            districtRecord.add("district_" + Integer.toString(d_w_id) + "_" + Integer.toString(d_id));
             districtRecord.add(d_id);
             districtRecord.add(d_w_id);
             districtRecord.add(d_name);
@@ -470,17 +474,17 @@ public class Load implements TpccConstants {
         }
 
         final String[] CUSTOMER_COLUMNS = {
-                "c_id", "c_d_id", "c_w_id", "c_first", "c_middle", "c_last", "c_street_1", "c_street_2", "c_city",
+                "c_id", "c_d_id", "c_w_id", "c_w_id_ref", "c_first", "c_middle", "c_last", "c_street_1", "c_street_2", "c_city",
                 "c_state", "c_zip", "c_phone", "c_since", "c_credit", "c_credit_lim",
                 "c_discount", "c_balance", "c_ytd_payment", "c_payment_cnt", "c_delivery_cnt", "c_data"
         };
-        final Record customerRecord = new Record(21);
+        final Record customerRecord = new Record(23);
         final RecordLoader customerLoader = loadConfig.createLoader("customer", CUSTOMER_COLUMNS);
 
         final String[] HISTORY_COLUMN_NAME = {
                 "h_c_id", "h_c_d_id", "h_c_w_id", "h_d_id", "h_w_id", "h_date", "h_amount", "h_data"
         };
-        final Record historyRecord = new Record(8);
+        final Record historyRecord = new Record(9);
         final RecordLoader historyLoader = loadConfig.createLoader("history", HISTORY_COLUMN_NAME);
 
         if ((currentShard == shardId) || (shardId == 0)) {
@@ -541,9 +545,11 @@ public class Load implements TpccConstants {
 
 
                     customerRecord.reset();
+                    customerRecord.add("customer_" + Integer.toString(c_w_id) + "_" + Integer.toString(c_d_id) + "_" + Integer.toString(c_id));
                     customerRecord.add(c_id);
                     customerRecord.add(c_d_id);
                     customerRecord.add(c_w_id);
+                    customerRecord.add("warehouse_" + Integer.toString(c_w_id));
                     customerRecord.add(c_first);
                     customerRecord.add(c_middle);
                     customerRecord.add(c_last);
@@ -581,6 +587,7 @@ public class Load implements TpccConstants {
                 try {
 
                     historyRecord.reset();
+                    historyRecord.add("uuid()");
                     historyRecord.add(c_id);
                     historyRecord.add(c_d_id);
                     historyRecord.add(c_w_id);
@@ -650,15 +657,15 @@ public class Load implements TpccConstants {
         }
 
         final String ORDERS_COLUMN_NAME[] = {"o_id", "o_d_id", "o_w_id", "o_c_id", "o_entry_d", "o_carrier_id", "o_ol_cnt", "o_all_local"};
-        final Record orderRecord = new Record(8);
+        final Record orderRecord = new Record(9);
         final RecordLoader orderLoader = loadConfig.createLoader("orders", ORDERS_COLUMN_NAME);
 
         final String NEW_ORDERS_COLUMN_NAMES[] = {"no_o_id", "no_d_id", "no_w_id"};
-        final Record newOrderRecord = new Record(3);
+        final Record newOrderRecord = new Record(4);
         final RecordLoader newOrderLoader = loadConfig.createLoader("new_orders", NEW_ORDERS_COLUMN_NAMES);
 
         final String ORDER_LINE_COLUMN_NAME[] = {"ol_o_id", "ol_d_id", "ol_w_id", "ol_number", "ol_i_id", "ol_supply_w_id", "ol_delivery_d", "ol_quantity", "ol_amount", "ol_dist_info"};
-        final Record orderLineRecord = new Record(10);
+        final Record orderLineRecord = new Record(11);
         final RecordLoader orderLineLoader = loadConfig.createLoader("order_line", ORDER_LINE_COLUMN_NAME);
 
         if ((currentShard == shardId) || (shardId == 0)) {
@@ -686,6 +693,7 @@ public class Load implements TpccConstants {
                                         NULL,:o_ol_cnt, 1);*/
 
                     orderRecord.reset();
+                    orderRecord.add("order_" + Integer.toString(o_w_id) + "_" + Integer.toString(o_d_id) + "_" + Integer.toString(o_id));
                     orderRecord.add(o_id);
                     orderRecord.add(o_d_id);
                     orderRecord.add(o_w_id);
@@ -702,6 +710,7 @@ public class Load implements TpccConstants {
                                          new_orders
                                          values(:o_id,:o_d_id,:o_w_id);*/
                     newOrderRecord.reset();
+                    newOrderRecord.add("neworder_" + Integer.toString(o_w_id) + "_" + Integer.toString(o_d_id) + "_" + Integer.toString(o_id));
                     newOrderRecord.add(o_id);
                     newOrderRecord.add(o_d_id);
                     newOrderRecord.add(o_w_id);
@@ -715,6 +724,7 @@ public class Load implements TpccConstants {
                                 :timestamp,
                                 :o_carrier_id,:o_ol_cnt, 1);*/
                     orderRecord.reset();
+                    orderRecord.add("order_" + Integer.toString(o_w_id) + "_" + Integer.toString(o_d_id) + "_" + Integer.toString(o_id));
                     orderRecord.add(o_id);
                     orderRecord.add(o_d_id);
                     orderRecord.add(o_w_id);
@@ -751,6 +761,7 @@ public class Load implements TpccConstants {
                                              :ol_i_id,:ol_supply_w_id, NULL,
                                              :ol_quantity,:ol_amount,:ol_dist_info);*/
                         orderLineRecord.reset();
+                        orderLineRecord.add("orderline_" + Integer.toString(o_w_id) + "_" + Integer.toString(o_d_id) + "_" + Integer.toString(o_id) + "_" + Integer.toString(ol));
                         orderLineRecord.add(o_id);
                         orderLineRecord.add(o_d_id);
                         orderLineRecord.add(o_w_id);
@@ -772,6 +783,7 @@ public class Load implements TpccConstants {
                                      :timestamp,
                                      :ol_quantity,:tmp_float,:ol_dist_info);*/
                         orderLineRecord.reset();
+                        orderLineRecord.add("orderline_" + Integer.toString(o_w_id) + "_" + Integer.toString(o_d_id) + "_" + Integer.toString(o_id) + "_" + Integer.toString(ol));
                         orderLineRecord.add(o_id);
                         orderLineRecord.add(o_d_id);
                         orderLineRecord.add(o_w_id);

@@ -32,25 +32,26 @@ public class JdbcPreparedStatementLoader implements RecordLoader {
         this.maxBatchSize = maxBatchSize;
 
         StringBuilder b = new StringBuilder();
-        b.append("INSERT ");
-        if (ignore) {
+        b.append("INSERT INTO default VALUES (?, {'type': '");
+        b.append(tableName);
+        b.append("'");
+        /*if (ignore) {
             b.append("IGNORE ");
-        }
-        b.append("INTO `").append(tableName).append("` (");
+        }*/
+        //b.append("INTO `").append(tableName).append("` (");
         for (int i = 0; i < columnName.length; i++) {
-            if (i > 0) {
-                b.append(',');
-            }
+            b.append(", '");
             b.append(columnName[i].trim());
+            b.append("': ?");
         }
-        b.append(") VALUES (");
-        for (int i = 0; i < columnName.length; i++) {
+        b.append("})");
+        /*for (int i = 0; i < columnName.length; i++) {
             if (i > 0) {
                 b.append(',');
             }
             b.append('?');
         }
-        b.append(')');
+        b.append(')');*/
         final String sql = b.toString();
 
         try {

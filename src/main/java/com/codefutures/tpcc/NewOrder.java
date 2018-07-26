@@ -244,13 +244,14 @@ public class NewOrder implements TpccConstants {
 
             try {
                 final PreparedStatement pstmt3 = pStmts.getStatement(3);
-                pstmt3.setInt(1, o_id);
-                pstmt3.setInt(2, d_id);
-                pstmt3.setInt(3, w_id);
-                pstmt3.setInt(4, c_id);
-                pstmt3.setString(5, currentTimeStamp);
-                pstmt3.setInt(6, o_ol_cnt);
-                pstmt3.setInt(7, o_all_local);
+                pstmt3.setString(1, "order_" + Integer.toString(w_id) + "_" + Integer.toString(d_id) + "_" + Integer.toString(o_id));
+                pstmt3.setInt(2, o_id);
+                pstmt3.setInt(3, d_id);
+                pstmt3.setInt(4, w_id);
+                pstmt3.setInt(5, c_id);
+                pstmt3.setString(6, currentTimeStamp);
+                pstmt3.setInt(7, o_ol_cnt);
+                pstmt3.setInt(8, o_all_local);
                 if (TRACE)
                     logger.trace("INSERT INTO orders (o_id, o_d_id, o_w_id, o_c_id, o_entry_d, o_ol_cnt, o_all_local) " +
                             "VALUES(" + o_id + "," + d_id + "," + w_id + "," + c_id + "," + currentTimeStamp + "," + o_ol_cnt + "," + o_all_local + ")");
@@ -267,9 +268,10 @@ public class NewOrder implements TpccConstants {
             //"INSERT INTO new_orders (no_o_id, no_d_id, no_w_id) VALUES (?,?,?)
             try {
                 final PreparedStatement pstmt4 = pStmts.getStatement(4);
-                pstmt4.setInt(1, o_id);
-                pstmt4.setInt(2, d_id);
-                pstmt4.setInt(3, w_id);
+                pstmt4.setString(1, "neworder_" + Integer.toString(w_id) + "_" + Integer.toString(d_id) + "_" + Integer.toString(o_id));
+                pstmt4.setInt(2, o_id);
+                pstmt4.setInt(3, d_id);
+                pstmt4.setInt(4, w_id);
                 if (TRACE)
                     logger.trace("INSERT INTO new_orders (no_o_id, no_d_id, no_w_id) VALUES (" + o_id + "," + d_id + "," + w_id + ")");
                 pstmt4.executeUpdate();
@@ -411,15 +413,16 @@ public class NewOrder implements TpccConstants {
 
                 try {
                     final PreparedStatement pstmt8 = pStmts.getStatement(8);
-                    pstmt8.setInt(1, o_id);
-                    pstmt8.setInt(2, d_id);
-                    pstmt8.setInt(3, w_id);
-                    pstmt8.setInt(4, ol_number);
-                    pstmt8.setInt(5, ol_i_id);
-                    pstmt8.setInt(6, ol_supply_w_id);
-                    pstmt8.setInt(7, ol_quantity);
-                    pstmt8.setDouble(8, ol_amount);
-                    pstmt8.setString(9, ol_dist_info);
+                    pstmt8.setString(1, "orderline_" + Integer.toString(w_id) + "_" + Integer.toString(d_id) + "_" + Integer.toString(o_id) + "_" + Integer.toString(ol_number));
+                    pstmt8.setInt(2, o_id);
+                    pstmt8.setInt(3, d_id);
+                    pstmt8.setInt(4, w_id);
+                    pstmt8.setInt(5, ol_number);
+                    pstmt8.setInt(6, ol_i_id);
+                    pstmt8.setInt(7, ol_supply_w_id);
+                    pstmt8.setInt(8, ol_quantity);
+                    pstmt8.setDouble(9, ol_amount);
+                    pstmt8.setString(10, ol_dist_info);
                     if (TRACE)
                         logger.trace("INSERT INTO order_line (ol_o_id, ol_d_id, ol_w_id, ol_number, ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_dist_info) " +
                                 "VALUES (" + o_id + "," + d_id + "," + w_id + "," + ol_number + "," + ol_i_id + "," + ol_supply_w_id + "," + ol_quantity + ","
