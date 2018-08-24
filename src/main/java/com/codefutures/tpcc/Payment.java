@@ -233,20 +233,20 @@ public class Payment implements TpccConstants {
                             "WHERE c_w_id = " + c_w_id + " AND c_d_id = " + c_d_id + " AND c_id = " + c_id + " FOR UPDATE");
                 ResultSet rs = pStmts.getStatement(15).executeQuery();
                 if (rs.next()) {
-                    c_first = rs.getString(1);
-                    c_middle = rs.getString(2);
-                    c_last = rs.getString(3);
-                    c_street_1 = rs.getString(4);
-                    c_street_2 = rs.getString(5);
-                    c_city = rs.getString(6);
-                    c_state = rs.getString(7);
-                    c_zip = rs.getString(8);
-                    c_phone = rs.getString(9);
-                    c_credit = rs.getString(10);
-                    c_credit_lim = rs.getInt(11);
-                    c_discount = rs.getDouble(12);
-                    c_balance = rs.getDouble(13);
-                    c_since = rs.getString(14);
+                    c_first = rs.getString("c_first");
+                    c_middle = rs.getString("c_middle");
+                    c_last = rs.getString("c_last");
+                    c_street_1 = rs.getString("c_street_1");
+                    c_street_2 = rs.getString("c_street_2");
+                    c_city = rs.getString("c_city");
+                    c_state = rs.getString("c_state");
+                    c_zip = rs.getString("c_zip");
+                    c_phone = rs.getString("c_phone");
+                    c_credit = rs.getString("c_credit");
+                    c_credit_lim = Integer.parseInt(rs.getString("c_credit_lim"));
+                    c_discount = Double.parseDouble(rs.getString("c_discount"));
+                    c_balance = Double.parseDouble(rs.getString("c_balance"));
+                    c_since = rs.getString("c_since");
                 }
 
                 rs.close();

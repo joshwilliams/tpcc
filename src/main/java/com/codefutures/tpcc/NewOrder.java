@@ -150,10 +150,10 @@ public class NewOrder implements TpccConstants {
                         logger.trace("SELECT c_discount, c_last, c_credit, w_tax FROM customer, warehouse WHERE w_id = " + w_id + " AND c_w_id = " + w_id + " AND c_d_id = " + d_id + " AND c_id = " + c_id);
                     try (ResultSet rs = pstmt0.executeQuery()) {
                         if (rs.next()) {
-                            c_discount = rs.getDouble(1);
-                            c_last = rs.getString(2);
-                            c_credit = rs.getString(3);
-                            w_tax = rs.getFloat(4);
+                            c_discount = Double.parseDouble(rs.getString("c_discount"));
+                            c_last = rs.getString("c_last");
+                            c_credit = rs.getString("c_credit");
+                            w_tax = Float.parseFloat(rs.getString("w_tax"));
                         }
                     }
                 } catch (SQLException e) {
@@ -181,14 +181,14 @@ public class NewOrder implements TpccConstants {
                         logger.trace("SELECT w_tax FROM warehouse WHERE w_id = " + w_id);
                     try (ResultSet rs0 = pstmt35.executeQuery()) {
                         if (rs0.next()) {
-                            c_discount = rs0.getDouble(1);
-                            c_last = rs0.getString(2);
-                            c_credit = rs0.getString(3);
+                            c_discount = Double.parseDouble(rs0.getString("c_discount"));
+                            c_last = rs0.getString("c_last");
+                            c_credit = rs0.getString("c_credit");
                         }
                     }
                     try (ResultSet rs1 = pstmt36.executeQuery()) {
                         if (rs1.next()) {
-                            w_tax = rs1.getFloat(1);
+                            w_tax = Float.parseFloat(rs1.getString(1));
                         }
                     }
                 } catch (SQLException e) {
@@ -207,8 +207,8 @@ public class NewOrder implements TpccConstants {
                     logger.trace("SELECT d_next_o_id, d_tax FROM district WHERE d_id = " + d_id + "  AND d_w_id = " + w_id + " FOR UPDATE");
                 try (ResultSet rs = pstmt1.executeQuery()) {
                     if (rs.next()) {
-                        d_next_o_id = rs.getInt(1);
-                        d_tax = rs.getFloat(2);
+                        d_next_o_id = Integer.parseInt(rs.getString("d_next_o_id"));
+                        d_tax = Float.parseFloat(rs.getString("d_tax"));
                     } else {
                         logger.error("Failed to obtain d_next_o_id. No results to query: "
                             + "SELECT d_next_o_id, d_tax FROM district WHERE d_id = " + d_id + "  AND d_w_id = " + w_id + " FOR UPDATE");
@@ -318,9 +318,9 @@ public class NewOrder implements TpccConstants {
                     if (TRACE) logger.trace("SELECT i_price, i_name, i_data FROM item WHERE i_id =" + ol_i_id);
                     try (ResultSet rs = pstmt5.executeQuery()) {
                         if (rs.next()) {
-                            i_price = rs.getFloat(1);
-                            i_name = rs.getString(2);
-                            i_data = rs.getString(3);
+                            i_price = Float.parseFloat(rs.getString("i_price"));
+                            i_name = rs.getString("i_name");
+                            i_data = rs.getString("i_data");
                         } else {
                             if (DEBUG) {
                                 logger.debug("No item found for item id " + ol_i_id);
@@ -348,18 +348,18 @@ public class NewOrder implements TpccConstants {
 
                     try (ResultSet rs = pstmt6.executeQuery()) {
                         if (rs.next()) {
-                            s_quantity = rs.getInt(1);
-                            s_data = rs.getString(2);
-                            s_dist_01 = rs.getString(3);
-                            s_dist_02 = rs.getString(4);
-                            s_dist_03 = rs.getString(5);
-                            s_dist_04 = rs.getString(6);
-                            s_dist_05 = rs.getString(7);
-                            s_dist_06 = rs.getString(8);
-                            s_dist_07 = rs.getString(9);
-                            s_dist_08 = rs.getString(10);
-                            s_dist_09 = rs.getString(11);
-                            s_dist_10 = rs.getString(12);
+                            s_quantity = Integer.parseInt(rs.getString("s_quantity"));
+                            s_data = rs.getString("s_data");
+                            s_dist_01 = rs.getString("s_dist_01");
+                            s_dist_02 = rs.getString("s_dist_02");
+                            s_dist_03 = rs.getString("s_dist_03");
+                            s_dist_04 = rs.getString("s_dist_04");
+                            s_dist_05 = rs.getString("s_dist_05");
+                            s_dist_06 = rs.getString("s_dist_06");
+                            s_dist_07 = rs.getString("s_dist_07");
+                            s_dist_08 = rs.getString("s_dist_08");
+                            s_dist_09 = rs.getString("s_dist_09");
+                            s_dist_10 = rs.getString("s_dist_10");
                         }
                     }
 

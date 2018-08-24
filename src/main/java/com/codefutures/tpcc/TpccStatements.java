@@ -62,7 +62,7 @@ public class TpccStatements {
         pStmts[17] = prepareStatement("UPDATE default SET c_balance = ?, c_data = ? WHERE type = 'customer' AND c_w_id = ? AND c_d_id = ? AND c_id = ?");
         pStmts[18] = prepareStatement("UPDATE default SET c_balance = ? WHERE type = 'customer' AND c_w_id = ? AND c_d_id = ? AND c_id = ?");
         //pStmts[19] = prepareStatement("INSERT INTO history(h_c_d_id, h_c_w_id, h_c_id, h_d_id, h_w_id, h_date, h_amount, h_data) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-        pStmts[19] = prepareStatement("INSERT INTO history VALUES (uuid(), {'h_c_d_id': ?, 'h_c_w_id': ?, 'h_c_id': ?, 'h_d_id': ?, 'h_w_id': ?, 'h_date': ?, 'h_amount': ?, 'h_data': ?)");
+        pStmts[19] = prepareStatement("INSERT INTO default VALUES (uuid(), {'type': 'history', 'h_c_d_id': ?, 'h_c_w_id': ?, 'h_c_id': ?, 'h_d_id': ?, 'h_w_id': ?, 'h_date': ?, 'h_amount': ?, 'h_data': ?})");
 
         // OrderStat statements.
         //pStmts[20] = prepareStatement("SELECT count(c_id) FROM customer WHERE c_w_id = ? AND c_d_id = ? AND c_last = ?");
@@ -70,16 +70,15 @@ public class TpccStatements {
         //pStmts[21] = prepareStatement("SELECT c_balance, c_first, c_middle, c_last FROM customer WHERE c_w_id = ? AND c_d_id = ? AND c_last = ? ORDER BY c_first");
         pStmts[21] = prepareStatement("SELECT c_balance, c_first, c_middle, c_last FROM default WHERE type = 'customer' AND c_w_id = ? AND c_d_id = ? AND c_last = ? ORDER BY c_first");
         //pStmts[22] = prepareStatement("SELECT c_balance, c_first, c_middle, c_last FROM customer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
-        pStmts[22] = prepareStatement("SELECT c_balance, c_first, c_middle, c_last FROM default WHREE type = 'customer' AND c_w_id = ? AND c_d_id = ? AND c_id = ?");
+        pStmts[22] = prepareStatement("SELECT c_balance, c_first, c_middle, c_last FROM default WHERE type = 'customer' AND c_w_id = ? AND c_d_id = ? AND c_id = ?");
         //pStmts[23] = prepareStatement("SELECT o_id, o_entry_d, COALESCE(o_carrier_id,0) FROM orders WHERE o_w_id = ? AND o_d_id = ? AND o_c_id = ? AND o_id = (SELECT MAX(o_id) FROM orders WHERE o_w_id = ? AND o_d_id = ? AND o_c_id = ?)");
-	// TODO: COALESCE?
-        pStmts[23] = prepareStatement("SELECT o_id, o_entry_d, COALESCE(o_carrier_id,0) FROM default WHERE type = 'orders' AND o_w_id = ? AND o_d_id = ? AND o_c_id = ? AND o_id = (SELECT MAX(o_id) FROM orders WHERE o_w_id = ? AND o_d_id = ? AND o_c_id = ?)");
+        pStmts[23] = prepareStatement("SELECT o_id, o_entry_d, IFMISSINGORNULL(o_carrier_id,0) FROM default WHERE type = 'orders' AND o_w_id = ? AND o_d_id = ? AND o_c_id = ? AND o_id = (SELECT MAX(o_id) FROM default AS sq WHERE type = 'orders' AND o_w_id = ? AND o_d_id = ? AND o_c_id = ?)");
         //pStmts[24] = prepareStatement("SELECT ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_delivery_d FROM order_line WHERE ol_w_id = ? AND ol_d_id = ? AND ol_o_id = ?");
         pStmts[24] = prepareStatement("SELECT ol_i_id, ol_supply_w_id, ol_quantity, ol_amount, ol_delivery_d FROM default WHERE type = 'order_line' AND ol_w_id = ? AND ol_d_id = ? AND ol_o_id = ?");
 
         // Delivery statements.
         //pStmts[25] = prepareStatement("SELECT COALESCE(MIN(no_o_id),0) FROM new_orders WHERE no_d_id = ? AND no_w_id = ?");
-        pStmts[25] = prepareStatement("SELECT COALESCE(MIN(no_o_id),0) FROM default WHERE type = 'new_orders' AND no_d_id = ? AND no_w_id = ?");
+        pStmts[25] = prepareStatement("SELECT IFMISSINGORNULL(MIN(no_o_id),0) FROM default WHERE type = 'new_orders' AND no_d_id = ? AND no_w_id = ?");
         //pStmts[26] = prepareStatement("DELETE FROM new_orders WHERE no_o_id = ? AND no_d_id = ? AND no_w_id = ?");
         pStmts[26] = prepareStatement("DELETE FROM default WHERE type = 'new_orders' AND no_o_id = ? AND no_d_id = ? AND no_w_id = ?");
         //pStmts[27] = prepareStatement("SELECT o_c_id FROM orders WHERE o_id = ? AND o_d_id = ? AND o_w_id = ?");
@@ -95,7 +94,7 @@ public class TpccStatements {
 
         // Slev statements.
         //pStmts[32] = prepareStatement("SELECT d_next_o_id FROM district WHERE d_id = ? AND d_w_id = ?");
-        pStmts[32] = prepareStatement("SELECT d_next_o_id FROM default WHERE type = 'district' AND META(default).id = 'district_' || ? AND d_w_id = ?");
+        pStmts[32] = prepareStatement("SELECT d_next_o_id FROM default WHERE type = 'district' AND d_id = ? AND d_w_id = ?");
         //pStmts[33] = prepareStatement("SELECT DISTINCT ol_i_id FROM order_line WHERE ol_w_id = ? AND ol_d_id = ? AND ol_o_id < ? AND ol_o_id >= (? - 20)");
         pStmts[33] = prepareStatement("SELECT DISTINCT ol_i_id FROM default WHERE type = 'order_line' AND ol_w_id = ? AND ol_d_id = ? AND ol_o_id < ? AND ol_o_id >= (? - 20)");
         //pStmts[34] = prepareStatement("SELECT count(*) FROM stock WHERE s_w_id = ? AND s_i_id = ? AND s_quantity < ?");
@@ -103,9 +102,9 @@ public class TpccStatements {
 
         // These are used in place of pStmts[0] in order to avoid joins
         //pStmts[35]  = prepareStatement("SELECT c_discount, c_last, c_credit FROM customer WHERE c_w_id = ? AND c_d_id = ? AND c_id = ?");
-        pStmts[35]  = prepareStatement("SELECT c_discount, c_last, c_credit FROM default WHERE type = 'customer' AND c_w_id = 'warehouse_' || ? AND c_d_id = ? AND META(default).id = 'customer_' || ?");
+        pStmts[35]  = prepareStatement("SELECT c_discount, c_last, c_credit FROM default WHERE type = 'customer' AND c_w_id = ? AND c_d_id = ? AND c_id = ?");
         //pStmts[36]  = prepareStatement("SELECT w_tax FROM warehouse WHERE w_id = ?");
-        pStmts[36]  = prepareStatement("SELECT w_tax FROM default WHERE type = 'warehouse' AND META(default).id = 'warehouse_' || ?");
+        pStmts[36]  = prepareStatement("SELECT w_tax FROM default WHERE type = 'warehouse' AND w_id = ?");
 
         for (int i = 0; i < pStmts.length; i++) {
             pStmts[i].setFetchSize(fetchSize);
@@ -117,7 +116,8 @@ public class TpccStatements {
         if (sql.startsWith("SELECT")) {
             return conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
         } else {
-            return conn.prepareStatement(sql, PreparedStatement.NO_GENERATED_KEYS);
+            //return conn.prepareStatement(sql, PreparedStatement.NO_GENERATED_KEYS);
+            return conn.prepareStatement(sql);
         }
     }
 

@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import com.couchbase.jdbc.util.Credentials;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -137,9 +139,10 @@ public class TpccThread extends Thread {
             } else {
                 logger.warn(connPropFile.getAbsolutePath() + " does not exist! Using default connection properties");
             }
-            prop.put("user", db_user);
-            prop.put("password", db_password);
 
+            Credentials cred = new Credentials();
+            cred.add(db_user, db_password);
+            prop.setProperty("credentials", cred.toString());
 
             conn = DriverManager.getConnection(jdbcUrl, prop);
             conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
